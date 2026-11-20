@@ -46,10 +46,10 @@ function createHandler(getDatabase) {
     res.setHeader("Referrer-Policy", "no-referrer");
     res.setHeader("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com; script-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
     try {
-      const origin = process.env.PUBLIC_ORIGIN;
-      if (!origin) throw new Error("PUBLIC_ORIGIN não está configurada.");
+      const origin = process.env.APP_ORIGIN || process.env.PUBLIC_ORIGIN;
+      if (!origin) throw new Error("APP_ORIGIN não está configurada.");
       const publicUrl = new URL(origin);
-      if (publicUrl.origin !== origin || publicUrl.protocol !== "https:") throw new Error("PUBLIC_ORIGIN deve ser uma origem HTTPS exata.");
+      if (publicUrl.origin !== origin || publicUrl.protocol !== "https:") throw new Error("APP_ORIGIN deve ser uma origem HTTPS exata.");
       const url = new URL(req.url, origin);
       if (!url.pathname.startsWith("/api/")) return send(res, 404, { error: "Não encontrado." });
       if (!["GET", "POST", "PUT"].includes(req.method)) return send(res, 405, { error: "Método não permitido." });

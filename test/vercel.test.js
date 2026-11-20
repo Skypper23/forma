@@ -21,7 +21,8 @@ test("API Vercel guarda sessões e planos em PostgreSQL", async t => {
   ];
   await setup(db, { users, plans: {} });
   const store = createStore(db);
-  process.env.PUBLIC_ORIGIN = "https://forma.example.test";
+  process.env.APP_ORIGIN = "https://forma.example.test";
+  process.env.PUBLIC_ORIGIN = "https://origem-antiga.example.test";
   const servers = [http.createServer(createHandler(() => store)), http.createServer(createHandler(() => createStore(db)))];
   for (const server of servers) {
     await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
@@ -29,7 +30,7 @@ test("API Vercel guarda sessões e planos em PostgreSQL", async t => {
   }
   const request = (instance, url, options = {}) => fetch(`http://127.0.0.1:${servers[instance].address().port}${url}`, {
     ...options,
-    headers: { Origin: process.env.PUBLIC_ORIGIN, "Content-Type": "application/json", "x-vercel-forwarded-for": "192.0.2.1", ...options.headers }
+    headers: { Origin: process.env.APP_ORIGIN, "Content-Type": "application/json", "x-vercel-forwarded-for": "192.0.2.1", ...options.headers }
   });
   async function login(email) {
     const response = await request(0, "/api/login", { method: "POST", body: JSON.stringify({ email, password }) });
@@ -38,6 +39,9 @@ test("API Vercel guarda sessões e planos em PostgreSQL", async t => {
     assert.match(cookie, /HttpOnly; SameSite=Strict; Path=\/; Max-Age=604800; Secure/);
     return cookie.split(";")[0];
   }
+  delete process.env.APP_ORIGIN;
+  assert.equal((await request(0, "/api/logout", { method: "POST", headers: { Origin: process.env.PUBLIC_ORIGIN }, body: "{}" })).status, 401);
+  process.env.APP_ORIGIN = "https://forma.example.test";
   assert.equal((await request(0, "/api/login", { method: "POST", headers: { Origin: "https://outro.test" }, body: "{}" })).status, 403);
   const admin = await login("gestor@example.test");
   const student = await login("aluno@example.test");
