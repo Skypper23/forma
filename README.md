@@ -39,7 +39,7 @@ A Vercel executa a API como função serverless: **não é necessário configura
 2. Na Vercel, em **Project Settings → Environment Variables**, configura para Production:
    - `DATABASE_URL`: a connection string do Neon.
    - `APP_ORIGIN`: o endereço HTTPS público exato, por exemplo `https://forma.vercel.app`, sem `/` no fim. Usa o domínio que os utilizadores vão abrir, não o URL temporário de um deployment. A variável anterior `PUBLIC_ORIGIN` continua a funcionar, mas `APP_ORIGIN` tem prioridade.
-3. Na Vercel, seleciona o framework **Other**, deixa o build command sem override e a root directory na raiz do projeto. O diretório `public` contém os ficheiros publicados; ao alterar o HTML, CSS ou JavaScript, mantém as cópias na raiz e em `public` iguais.
+3. Na Vercel, deixa o build command sem override e a root directory na raiz do projeto (não em `public`). O `vercel.json` seleciona o framework **Other** para impedir que o JavaScript do navegador seja executado como servidor. O diretório `public` contém os ficheiros publicados; ao alterar o HTML, CSS ou JavaScript, mantém as cópias na raiz e em `public` iguais.
 4. No teu computador, instala as dependências com `npm.cmd install` e prepara `data/users.json` conforme a secção Preparar. Para criar as tabelas e importar as contas e eventuais planos locais, abre PowerShell na pasta do projeto e executa:
 
    ```powershell
