@@ -1,0 +1,11 @@
+{
+  "name": "forma",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "password": "node gerar-password.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
