@@ -188,4 +188,5 @@ if (require.main === module) {
   const host = process.env.VERCEL ? "0.0.0.0" : "127.0.0.1";
   server.listen(port, host, () => console.log(`FORMA disponível em http://localhost:${port}`));
 }
-module.exports = { server, validPlan, verifyPassword };
+
+module.exports = server;
